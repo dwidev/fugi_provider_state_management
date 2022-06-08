@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:fugi_provider_state_management/provider/todo_list_unsucces_provider.dart';
+import 'package:provider/provider.dart';
+
+import '../model/todo_item_model.dart';
 
 class NoteListItemWidget extends StatelessWidget {
-  const NoteListItemWidget({Key? key, this.isDone = false}) : super(key: key);
+  const NoteListItemWidget({
+    Key? key,
+    required this.itemModel,
+    this.isDone = false,
+  }) : super(key: key);
 
+  final TodoItemModel itemModel;
   final bool isDone;
 
   @override
@@ -18,10 +27,10 @@ class NoteListItemWidget extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text("Catatan"),
-                  SizedBox(height: 5),
-                  Text("deskripsi"),
+                children: [
+                  Text(itemModel.title),
+                  const SizedBox(height: 5),
+                  Text(itemModel.description),
                 ],
               ),
             ),
@@ -31,7 +40,12 @@ class NoteListItemWidget extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   primary: Colors.green,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  context.read<TodoListUnSuccessProvider>().onDone(
+                        context: context,
+                        item: itemModel,
+                      );
+                },
                 child: const Icon(Icons.check),
               ),
             }

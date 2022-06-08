@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/todo_list_unsucces_provider.dart';
 
 class TodoFormPage extends StatefulWidget {
   const TodoFormPage({Key? key}) : super(key: key);
@@ -11,6 +14,7 @@ class _TodoFormPageState extends State<TodoFormPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final provider = context.read<TodoListUnSuccessProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -23,16 +27,20 @@ class _TodoFormPageState extends State<TodoFormPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
+              controller: provider.titleController,
               decoration: const InputDecoration(hintText: "Title"),
             ),
             const SizedBox(height: 10),
             TextFormField(
+              controller: provider.descController,
               decoration: const InputDecoration(hintText: "description"),
               maxLines: 5,
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                provider.onSaveItem(context: context);
+              },
               child: const Text("Simpan"),
             ),
           ],

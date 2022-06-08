@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fugi_provider_state_management/widget/note_list_item_widget.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/todo_list_succes_provider.dart';
+import '../widget/todo_list_item_widget.dart';
 
 class TodoDonePage extends StatefulWidget {
   const TodoDonePage({Key? key}) : super(key: key);
@@ -36,11 +39,25 @@ class _TodoDonePageState extends State<TodoDonePage> {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return const NoteListItemWidget(isDone: true);
+              child: Consumer<TodoListSuccessProvider>(
+                builder: (context, prov, child) {
+                  if (prov.state.isEmpty) {
+                    return const Center(
+                      child: Text("Belum ada data nih"),
+                    );
+                  }
+
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: prov.state.length,
+                    itemBuilder: (context, index) {
+                      final item = prov.state[index];
+                      return NoteListItemWidget(
+                        itemModel: item,
+                        isDone: true,
+                      );
+                    },
+                  );
                 },
               ),
             )

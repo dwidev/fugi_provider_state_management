@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fugi_provider_state_management/page/todo_form_page.dart';
+import 'package:provider/provider.dart';
 
-import '../widget/note_list_item_widget.dart';
+import '../provider/todo_list_succes_provider.dart';
+import '../provider/todo_list_unsucces_provider.dart';
+import '../widget/todo_list_item_widget.dart';
 import 'todo_done_page.dart';
+import 'todo_form_page.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({Key? key}) : super(key: key);
@@ -19,7 +22,7 @@ class _TodoListPageState extends State<TodoListPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Fugi Note App"),
+        title: const Text("Fugi Todo App"),
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -44,17 +47,33 @@ class _TodoListPageState extends State<TodoListPage> {
                       ),
                     );
                   },
-                  child: const Text("Sudah diselesaikan (10)"),
+                  child: Consumer<TodoListSuccessProvider>(
+                      builder: (context, prov, child) {
+                    return Text("Sudah diselesaikan (${prov.state.length})");
+                  }),
                 ),
               ],
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return const NoteListItemWidget();
+              child: Consumer<TodoListUnSuccessProvider>(
+                builder: (context, prov, child) {
+                  if (prov.state.isEmpty) {
+                    return const Center(
+                      child: Text("Belum ada data nih"),
+                    );
+                  }
+
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: prov.state.length,
+                    itemBuilder: (context, index) {
+                      final item = prov.state[index];
+                      return NoteListItemWidget(
+                        itemModel: item,
+                      );
+                    },
+                  );
                 },
               ),
             )
