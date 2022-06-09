@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fugi_provider_state_management/widget/note_list_item_widget.dart';
+import 'package:provider/provider.dart';
 
-class TodoDonePage extends StatefulWidget {
+import '../provider/todo_list_done_provider.dart';
+import '../widget/note_list_item_widget.dart';
+
+class TodoDonePage extends StatelessWidget {
   const TodoDonePage({Key? key}) : super(key: key);
 
-  @override
-  State<TodoDonePage> createState() => _TodoDonePageState();
-}
-
-class _TodoDonePageState extends State<TodoDonePage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -36,11 +34,21 @@ class _TodoDonePageState extends State<TodoDonePage> {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return const NoteListItemWidget(isDone: true);
+              child: Consumer<TodoListDoneProvider>(
+                builder: (context, provider, child) {
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: provider.listDone.length,
+                    itemBuilder: (context, index) {
+                      final todoItem = provider.listDone[index];
+
+                      return NoteListItemWidget(
+                        todoItem: todoItem,
+                        index: index,
+                        isDone: true,
+                      );
+                    },
+                  );
                 },
               ),
             )

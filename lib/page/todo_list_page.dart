@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:fugi_provider_state_management/page/todo_form_page.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/todo_list_done_provider.dart';
+import '../provider/todo_list_provider.dart';
 import '../widget/note_list_item_widget.dart';
 import 'todo_done_page.dart';
+import 'todo_form_page.dart';
 
-class TodoListPage extends StatefulWidget {
+class TodoListPage extends StatelessWidget {
   const TodoListPage({Key? key}) : super(key: key);
 
-  @override
-  State<TodoListPage> createState() => _TodoListPageState();
-}
-
-class _TodoListPageState extends State<TodoListPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -44,17 +42,26 @@ class _TodoListPageState extends State<TodoListPage> {
                       ),
                     );
                   },
-                  child: const Text("Sudah diselesaikan (10)"),
+                  child: Text(
+                      "Sudah diselesaikan ${context.watch<TodoListDoneProvider>().count}"),
                 ),
               ],
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return const NoteListItemWidget();
+              child: Consumer<TodoListPovider>(
+                builder: (context, provider, child) {
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: provider.listTodo.length,
+                    itemBuilder: (context, index) {
+                      final todoItem = provider.listTodo[index];
+                      return NoteListItemWidget(
+                        index: index,
+                        todoItem: todoItem,
+                      );
+                    },
+                  );
                 },
               ),
             )

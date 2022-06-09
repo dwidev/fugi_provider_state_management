@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:fugi_provider_state_management/model/todo_item.dart';
+import 'package:fugi_provider_state_management/provider/todo_list_done_provider.dart';
+import 'package:fugi_provider_state_management/provider/todo_list_provider.dart';
+import 'package:provider/provider.dart';
 
 class NoteListItemWidget extends StatelessWidget {
-  const NoteListItemWidget({Key? key, this.isDone = false}) : super(key: key);
+  const NoteListItemWidget({
+    Key? key,
+    required this.index,
+    required this.todoItem,
+    this.isDone = false,
+  }) : super(key: key);
 
+  final int index;
+  final TodoItem todoItem;
   final bool isDone;
 
   @override
@@ -18,10 +29,10 @@ class NoteListItemWidget extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text("Catatan"),
-                  SizedBox(height: 5),
-                  Text("deskripsi"),
+                children: [
+                  Text(todoItem.title),
+                  const SizedBox(height: 5),
+                  Text(todoItem.description),
                 ],
               ),
             ),
@@ -31,7 +42,13 @@ class NoteListItemWidget extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   primary: Colors.green,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  context.read<TodoListPovider>().onChecklist(
+                        index: index,
+                        item: todoItem,
+                      );
+                  context.read<TodoListDoneProvider>().onAddItem(todoItem);
+                },
                 child: const Icon(Icons.check),
               ),
             }
